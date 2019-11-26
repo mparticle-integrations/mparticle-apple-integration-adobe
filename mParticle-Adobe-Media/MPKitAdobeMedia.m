@@ -12,11 +12,11 @@
 @import mParticle_Apple_Media_SDK;
 @import mParticle_Apple_SDK;
 
-NSString *marketingCloudIdIntegrationAttributeKey = @"mid";
-NSString *blobIntegrationAttributeKey = @"aamb";
-NSString *locationHintIntegrationAttributeKey = @"aamlh";
-NSString *organizationIdConfigurationKey = @"organizationID";
-NSString *launchAppIdKey = @"launchAppId";
+static NSString *const marketingCloudIdIntegrationAttributeKey = @"mid";
+static NSString *const blobIntegrationAttributeKey = @"aamb";
+static NSString *const locationHintIntegrationAttributeKey = @"aamlh";
+static NSString *const organizationIdConfigurationKey = @"organizationID";
+static NSString *const launchAppIdKey = @"launchAppId";
 
 #pragma mark - MPIAdobeApi
 @implementation MPIAdobeApi
