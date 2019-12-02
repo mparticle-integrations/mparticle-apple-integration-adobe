@@ -1,10 +1,10 @@
 #import "MPKitAdobe.h"
 #import "MPIAdobe.h"
 
-NSString *marketingCloudIdIntegrationAttributeKey = @"mid";
-NSString *blobIntegrationAttributeKey = @"aamb";
-NSString *locationHintIntegrationAttributeKey = @"aamlh";
-NSString *organizationIdConfigurationKey = @"organizationID";
+static NSString *const marketingCloudIdIntegrationAttributeKey = @"mid";
+static NSString *const blobIntegrationAttributeKey = @"aamb";
+static NSString *const locationHintIntegrationAttributeKey = @"aamlh";
+static NSString *const organizationIdConfigurationKey = @"organizationID";
 
 #pragma mark - MPIAdobeApi
 @implementation MPIAdobeApi

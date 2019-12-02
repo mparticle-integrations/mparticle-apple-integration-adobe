@@ -3,41 +3,41 @@
 
 NSString *const MPIAdobeErrorKey = @"MPIAdobeErrorKey";
 
-NSString *host = @"dpm.demdex.net";
-NSString *protocol = @"https";
-NSString *path = @"/id?";
+static NSString *const host = @"dpm.demdex.net";
+static NSString *const protocol = @"https";
+static NSString *const path = @"/id?";
 
-NSString *marketingCloudIdKey = @"d_mid";
-NSString *organizationIdKey = @"d_orgid";
-NSString *deviceIdKey = @"d_cid";
-NSString *userIdentityKey = @"d_cid_ic";
-NSString *regionKey = @"dcs_region";
-NSString *blobKey = @"d_blob";
-NSString *platformKey = @"d_ptfm";
-NSString *versionKey = @"d_ver";
+static NSString *const marketingCloudIdKey = @"d_mid";
+static NSString *const organizationIdKey = @"d_orgid";
+static NSString *const deviceIdKey = @"d_cid";
+static NSString *const userIdentityKey = @"d_cid_ic";
+static NSString *const regionKey = @"dcs_region";
+static NSString *const blobKey = @"d_blob";
+static NSString *const platformKey = @"d_ptfm";
+static NSString *const versionKey = @"d_ver";
 
-NSString *platform = @"ios";
-NSString *version = @"2";
+static NSString *const platform = @"ios";
+static NSString *const version = @"2";
 
-NSString *advertiserIdDeviceKey = @"20915";
-NSString *pushTokenDeviceKey = @"20920";
+static NSString *const advertiserIdDeviceKey = @"20915";
+static NSString *const pushTokenDeviceKey = @"20920";
 
-NSString *customerIdIdentityKey = @"customerid";
-NSString *emailIdentityKey = @"email";
+static NSString *const customerIdIdentityKey = @"customerid";
+static NSString *const emailIdentityKey = @"email";
 
-NSString *idSuffix = @"%01";
+static NSString *const idSuffix = @"%01";
 
-NSString *errorResponseKey = @"error_msg";
-NSString *errorMessageKey = @"msg";
-NSString *errorCodeKey = @"code";
+static NSString *const errorResponseKey = @"error_msg";
+static NSString *const errorMessageKey = @"msg";
+static NSString *const errorCodeKey = @"code";
 
-NSString *invalidMarketingCloudId = @"<null>";
+static NSString *const invalidMarketingCloudId = @"<null>";
 
-NSString *errorDomain = @"mParticle-Adobe";
-NSString *serverErrorDomain = @"mParticle-Adobe Server Response";
-NSString *errorKey = @"Error";
+static NSString *const errorDomain = @"mParticle-Adobe";
+static NSString *const serverErrorDomain = @"mParticle-Adobe Server Response";
+static NSString *const errorKey = @"Error";
 
-NSString *marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_MID";
+static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_MID";
 
 @interface MPIAdobeError ()
 
