@@ -6,3 +6,6 @@ script:
 - pod lib lint --use-libraries --allow-warnings || pod lib lint --allow-warnings
 - pod install
 - xcodebuild -workspace mParticle-Adobe-Media.xcworkspace -scheme mParticle-Adobe-Media -destination 'platform=iOS Simulator,OS=13.0,name=iPhone 11 Pro Max' build
+- set -e
+- [ "$name" == "sdk" ] && exit 0
+- pod trunk push --use-libraries --allow-warnings || pod trunk push --allow-warnings || true'
