@@ -5,7 +5,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 project 'mParticle-Adobe-Media.xcodeproj'
 
 target 'mParticle-Adobe-Media' do
-  # Comment the next line if you don't want to use dynamic frameworks
+  # Comment the next line if you don't want to use dynamic frameworks test
   use_frameworks!
 
   pod 'mParticle-Apple-Media-SDK', '~> 1.0.0-beta.3'
