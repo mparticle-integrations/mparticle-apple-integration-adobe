@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "mParticle-Apple-SDK",
+        "repositoryURL": "https://github.com/mParticle/mparticle-apple-sdk",
+        "state": {
+          "branch": null,
+          "revision": "2025782816e247534329a78158be5bc6dee9b24f",
+          "version": "7.16.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
