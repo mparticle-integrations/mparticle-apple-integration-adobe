@@ -206,7 +206,7 @@ static NSString *const launchAppIdKey = @"launchAppId";
             break;
         }
         case MPMediaEventNameAdStart: {
-            NSDictionary* adObject = [ACPMedia createAdObjectWithName:mediaEvent.adContent.title adId:mediaEvent.adContent.id position:mediaEvent.adContent.placement.doubleValue length:mediaEvent.adContent.duration.doubleValue];
+            NSDictionary* adObject = [ACPMedia createAdObjectWithName:mediaEvent.adContent.title adId:mediaEvent.adContent.id position:mediaEvent.adContent.position.doubleValue length:mediaEvent.adContent.duration.doubleValue];
             NSMutableDictionary* adMetadata = [[NSMutableDictionary alloc] init];
             
             if (mediaEvent.adContent.advertiser != nil) {
