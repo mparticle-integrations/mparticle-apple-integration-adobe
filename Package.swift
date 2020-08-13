@@ -6,7 +6,7 @@ let package = Package(
     platforms: [.iOS(.v9)],
     // platforms: [.iOS("11.0")],
     products: [
-        .library(name: "mparticle-apple-integration-adobe", targets: ["mparticle-apple-integration-adobe"])
+        .library(name: "mParticle_Adobe", targets: ["mParticle_Adobe"])
     ],
     dependencies: [
         .package(
@@ -15,7 +15,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "mparticle-apple-integration-adobe",
+            name: "mParticle_Adobe",
             dependencies: [
                 "mParticle-Apple-SDK"
             ],
