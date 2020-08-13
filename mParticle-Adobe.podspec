@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
     s.default_subspec = 'AdobeMedia'
 
     s.subspec 'Adobe' do |ss|
-        ss.ios.source_files      = 'mParticle-Adobe/*.{h,m}', ''mParticle-Adobe/include/*.{h,m}'
+        ss.ios.source_files      = 'mParticle-Adobe/*.{h,m}', 'mParticle-Adobe/include/*.{h,m}'
         ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 7.0'
     s.ios.framework = 'UIKit'
     end
