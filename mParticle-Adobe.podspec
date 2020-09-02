@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
     s.subspec 'AdobeMedia' do |ss|
         ss.ios.source_files      = 'mParticle-Adobe-Media/*.{h,m}'
         ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0-beta'
-        ss.ios.dependency 'mParticle-Apple-Media-SDK', '~> 1.3.0'
+        ss.ios.dependency 'mParticle-Apple-Media-SDK', '~> 1.3.1'
         ss.ios.dependency 'ACPMedia', '~> 1.0'
         ss.ios.dependency 'ACPAnalytics', '~> 2.0'
         ss.ios.dependency 'ACPCore', '~> 2.0'

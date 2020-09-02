@@ -271,6 +271,12 @@ static NSString *const launchAppIdKey = @"launchAppId";
         } else {
             return ACPMediaStreamTypeAod;
         }
+    } else if (mediaEvent.streamType == MPMediaStreamTypeLinear) {
+        return ACPMediaStreamTypeLinear;
+    } else if (mediaEvent.streamType == MPMediaStreamTypePodcast) {
+        return ACPMediaStreamTypePodcast;
+    } else if (mediaEvent.streamType == MPMediaStreamTypeAudiobook) {
+        return ACPMediaStreamTypeAudiobook;
     } else {
         return ACPMediaStreamTypeLive;
     }
