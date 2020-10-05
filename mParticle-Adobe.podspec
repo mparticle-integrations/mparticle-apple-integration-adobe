@@ -19,6 +19,13 @@ Pod::Spec.new do |s|
     s.ios.deployment_target = "10.0"
     s.default_subspec = 'AdobeMedia'
 
+    s.ios.pod_target_xcconfig = {
+        'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
+    }
+    s.ios.user_target_xcconfig = {
+        'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
+    }
+
     s.subspec 'Adobe' do |ss|
         ss.ios.source_files      = 'mParticle-Adobe/*.{h,m}'
         ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
