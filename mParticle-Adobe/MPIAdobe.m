@@ -1,5 +1,10 @@
+// Be sure to apply changes to both copies of this file in the repository
 #import "MPIAdobe.h"
-#import "MPKitAdobe.h"
+#if defined(__has_include) && __has_include(<mParticle_Apple_SDK/mParticle.h>)
+#import <mParticle_Apple_SDK/mParticle.h>
+#else
+#import "mParticle.h"
+#endif
 
 NSString *const MPIAdobeErrorKey = @"MPIAdobeErrorKey";
 
@@ -22,20 +27,14 @@ static NSString *const version = @"2";
 static NSString *const advertiserIdDeviceKey = @"20915";
 static NSString *const pushTokenDeviceKey = @"20920";
 
-static NSString *const customerIdIdentityKey = @"customerid";
-static NSString *const emailIdentityKey = @"email";
-
 static NSString *const idSuffix = @"%01";
 
 static NSString *const errorResponseKey = @"error_msg";
-static NSString *const errorMessageKey = @"msg";
-static NSString *const errorCodeKey = @"code";
 
 static NSString *const invalidMarketingCloudId = @"<null>";
 
 static NSString *const errorDomain = @"mParticle-Adobe";
 static NSString *const serverErrorDomain = @"mParticle-Adobe Server Response";
-static NSString *const errorKey = @"Error";
 
 static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_MID";
 

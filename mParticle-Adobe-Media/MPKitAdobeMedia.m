@@ -17,6 +17,7 @@ static NSString *const blobIntegrationAttributeKey = @"aamb";
 static NSString *const locationHintIntegrationAttributeKey = @"aamlh";
 static NSString *const organizationIdConfigurationKey = @"organizationID";
 static NSString *const launchAppIdKey = @"launchAppId";
+static NSString *const audienceManagerServerConfigurationKey = @"audienceManagerServer";
 
 #pragma mark - MPIAdobeApi
 @implementation MPIAdobeApi
@@ -32,6 +33,7 @@ static NSString *const launchAppIdKey = @"launchAppId";
 @property ACPMediaTracker *mediaTracker;
 @property (nonatomic) BOOL hasSetMCID;
 @property (nonatomic) NSString *pushToken;
+@property (nonatomic) NSString *audienceManagerServer;
 
 @end
 
@@ -62,6 +64,8 @@ static NSString *const launchAppIdKey = @"launchAppId";
     if (!_organizationId.length) {
         return [self execStatus:MPKitReturnCodeRequirementsNotMet];
     }
+
+    _audienceManagerServer = [configuration[audienceManagerServerConfigurationKey] copy];
 
     _configuration = configuration;
 
@@ -350,7 +354,7 @@ static NSString *const launchAppIdKey = @"launchAppId";
     NSString *pushToken = [self pushToken];
     FilteredMParticleUser *user = [self currentUser];
     NSDictionary *userIdentities = user.userIdentities;
-    [_adobe sendRequestWithMarketingCloudId:marketingCloudId advertiserId:advertiserId pushToken:pushToken organizationId:_organizationId userIdentities:userIdentities completion:^(NSString *marketingCloudId, NSString *locationHint, NSString *blob, NSError *error) {
+    [_adobe sendRequestWithMarketingCloudId:marketingCloudId advertiserId:advertiserId pushToken:pushToken organizationId:_organizationId userIdentities:userIdentities audienceManagerServer:_audienceManagerServer completion:^(NSString *marketingCloudId, NSString *locationHint, NSString *blob, NSError *error) {
         if (error) {
             NSLog(@"mParticle -> Adobe kit request failed with error: %@", error);
             return;
@@ -372,6 +376,38 @@ static NSString *const launchAppIdKey = @"launchAppId";
             self->_hasSetMCID = YES;
         }
     }];
+}
+
+- (MPKitExecStatus *)setDeviceToken:(NSData *)deviceToken {
+    _pushToken = [[NSString alloc] initWithData:deviceToken encoding:NSUTF8StringEncoding];
+    [self sendNetworkRequest];
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
+}
+
+- (MPKitExecStatus *)setUserIdentity:(NSString *)identityString identityType:(MPUserIdentity)identityType {
+    [self sendNetworkRequest];
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
+}
+
+- (nonnull MPKitExecStatus *)didBecomeActive {
+    [self sendNetworkRequest];
+    
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAdobe) returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
+}
+
+- (BOOL)shouldDelayMParticleUpload {
+    return !_hasSetMCID;
+}
+
+- (MPKitAPI *)kitApi {
+    if (_kitApi == nil) {
+        _kitApi = [[MPKitAPI alloc] init];
+    }
+    
+    return _kitApi;
 }
 
 @end
