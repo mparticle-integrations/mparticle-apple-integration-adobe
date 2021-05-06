@@ -5,6 +5,8 @@ static NSString *const marketingCloudIdIntegrationAttributeKey = @"mid";
 static NSString *const blobIntegrationAttributeKey = @"aamb";
 static NSString *const locationHintIntegrationAttributeKey = @"aamlh";
 static NSString *const organizationIdConfigurationKey = @"organizationID";
+static NSString *const audienceManagerServerConfigurationKey = @"audienceManagerServer";
+
 
 #pragma mark - MPIAdobeApi
 @implementation MPIAdobeApi
@@ -20,6 +22,7 @@ static NSString *const organizationIdConfigurationKey = @"organizationID";
 @property (nonatomic) MPIAdobe *adobe;
 @property (nonatomic) BOOL hasSetMCID;
 @property (nonatomic) NSString *pushToken;
+@property (nonatomic) NSString *audienceManagerServer;
 
 @end
 
@@ -47,6 +50,7 @@ static NSString *const organizationIdConfigurationKey = @"organizationID";
         execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeRequirementsNotMet];
         return execStatus;
     }
+    _audienceManagerServer = [configuration[audienceManagerServerConfigurationKey] copy];
     
     _configuration = configuration;
     _started       = YES;
@@ -128,7 +132,7 @@ static NSString *const organizationIdConfigurationKey = @"organizationID";
     NSString *pushToken = [self pushToken];
     FilteredMParticleUser *user = [self currentUser];
     NSDictionary *userIdentities = user.userIdentities;
-    [_adobe sendRequestWithMarketingCloudId:marketingCloudId advertiserId:advertiserId pushToken:pushToken organizationId:_organizationId userIdentities:userIdentities completion:^(NSString *marketingCloudId, NSString *locationHint, NSString *blob, NSError *error) {
+    [_adobe sendRequestWithMarketingCloudId:marketingCloudId advertiserId:advertiserId pushToken:pushToken organizationId:_organizationId userIdentities:userIdentities audienceManagerServer:_audienceManagerServer completion:^(NSString *marketingCloudId, NSString *locationHint, NSString *blob, NSError *error) {
         if (error) {
             NSLog(@"mParticle -> Adobe kit request failed with error: %@", error);
             return;

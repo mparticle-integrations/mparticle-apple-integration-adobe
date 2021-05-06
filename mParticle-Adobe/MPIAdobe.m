@@ -1,9 +1,14 @@
+// Be sure to apply changes to both copies of this file in the repository
 #import "MPIAdobe.h"
-#import "MPKitAdobe.h"
+#if defined(__has_include) && __has_include(<mParticle_Apple_SDK/mParticle.h>)
+#import <mParticle_Apple_SDK/mParticle.h>
+#else
+#import "mParticle.h"
+#endif
 
 NSString *const MPIAdobeErrorKey = @"MPIAdobeErrorKey";
 
-static NSString *const host = @"dpm.demdex.net";
+static NSString *      host = @"dpm.demdex.net";
 static NSString *const protocol = @"https";
 static NSString *const path = @"/id?";
 
@@ -22,20 +27,14 @@ static NSString *const version = @"2";
 static NSString *const advertiserIdDeviceKey = @"20915";
 static NSString *const pushTokenDeviceKey = @"20920";
 
-static NSString *const customerIdIdentityKey = @"customerid";
-static NSString *const emailIdentityKey = @"email";
-
 static NSString *const idSuffix = @"%01";
 
 static NSString *const errorResponseKey = @"error_msg";
-static NSString *const errorMessageKey = @"msg";
-static NSString *const errorCodeKey = @"code";
 
 static NSString *const invalidMarketingCloudId = @"<null>";
 
 static NSString *const errorDomain = @"mParticle-Adobe";
 static NSString *const serverErrorDomain = @"mParticle-Adobe Server Response";
-static NSString *const errorKey = @"Error";
 
 static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_MID";
 
@@ -77,8 +76,11 @@ static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_M
 
 @implementation MPIAdobe
 
-- (void)sendRequestWithMarketingCloudId:(NSString *)marketingCloudId advertiserId:(NSString *)advertiserId pushToken:(NSString *)pushToken organizationId:(NSString *)organizationId userIdentities:(NSDictionary<NSNumber *, NSString *> *)userIdentities completion:(void (^)(NSString *marketingCloudId, NSString *blob, NSString *locationHint, NSError *))completion {
+- (void)sendRequestWithMarketingCloudId:(NSString *)marketingCloudId advertiserId:(NSString *)advertiserId pushToken:(NSString *)pushToken organizationId:(NSString *)organizationId userIdentities:(NSDictionary<NSNumber *, NSString *> *)userIdentities audienceManagerServer:(NSString *)audienceManagerServer completion:(void (^)(NSString *marketingCloudId, NSString *blob, NSString *locationHint, NSError *))completion {
     
+    if (audienceManagerServer != nil && audienceManagerServer.length > 0) {
+        host = audienceManagerServer;
+    }
     NSDictionary *userIdentityMappings = @{
                                            @(MPUserIdentityOther): @"other",
                                            @(MPUserIdentityCustomerId): @"customerid",
