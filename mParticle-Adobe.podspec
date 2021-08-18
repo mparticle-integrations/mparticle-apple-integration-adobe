@@ -17,7 +17,8 @@ Pod::Spec.new do |s|
     s.swift_version = "5.0"
 
     s.ios.deployment_target = "10.0"
-    s.default_subspec = 'AdobeMedia'
+    s.tvos.deployment_target = "10.0"
+    s.default_subspec = 'Adobe'
 
     s.ios.pod_target_xcconfig = {
         'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
@@ -25,20 +26,20 @@ Pod::Spec.new do |s|
     s.ios.user_target_xcconfig = {
         'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
     }
+    s.tvos.pod_target_xcconfig = {
+        'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
+    }
+    s.tvos.user_target_xcconfig = {
+        'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
+    }
 
     s.subspec 'Adobe' do |ss|
         ss.ios.source_files      = 'mParticle-Adobe/*.{h,m}'
         ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
-    s.ios.framework = 'UIKit'
+        s.ios.framework = 'UIKit'
+        ss.tvos.source_files      = 'mParticle-Adobe/*.{h,m}'
+        ss.tvos.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
+        s.tvos.framework = 'UIKit'
     end
 
-    s.subspec 'AdobeMedia' do |ss|
-        ss.ios.source_files      = 'mParticle-Adobe-Media/*.{h,m}'
-        ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
-        ss.ios.dependency 'mParticle-Apple-Media-SDK', '~> 1.3'
-        ss.ios.dependency 'ACPMedia', '~> 1.0'
-        ss.ios.dependency 'ACPAnalytics', '~> 2.0'
-        ss.ios.dependency 'ACPCore', '~> 2.0'
-        ss.ios.dependency 'ACPUserProfile', '~> 2.0'
-    end
 end
