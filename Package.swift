@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "mParticle-Adobe",
-    platforms: [.iOS(.v9)],
+    platforms: [.iOS(.v10)],
     products: [
         .library(name: "mParticle-Adobe", targets: ["mParticle-Adobe"]), //, "mParticle-Adobe-Media"])
         .library(name: "mParticle-Adobe-Media", targets: ["mParticle-Adobe-Media"])
