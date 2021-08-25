@@ -6,7 +6,7 @@ let package = Package(
     name: "mParticle-Adobe",
     platforms: [.iOS(.v10)],
     products: [
-        .library(name: "mParticle-Adobe", targets: ["mParticle-Adobe"]), //, "mParticle-Adobe-Media"])
+        .library(name: "mParticle-Adobe", targets: ["mParticle-Adobe"]),
         .library(name: "mParticle-Adobe-Media", targets: ["mParticle-Adobe-Media"])
     ],
     dependencies: [
@@ -41,7 +41,6 @@ let package = Package(
             publicHeadersPath: "."),
         .target(
             name: "mParticle-Adobe-Media",
-//            dependencies: ["mParticle-Apple-SDK", "mParticle-Apple-Media-SDK", "AEPCore", "AEPMedia", "AEPAnalytics", "AEPUserProfile"], //"AEPIdentity", "AEPLifecycle", "AEPSignal"],
             dependencies: [
                 .byName(name: "mParticle-Apple-SDK"),
                 .byName(name: "mParticle-Apple-Media-SDK"),
