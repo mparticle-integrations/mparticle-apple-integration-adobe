@@ -36,9 +36,12 @@ Pod::Spec.new do |s|
         ss.ios.source_files      = 'mParticle-Adobe-Media/*.{h,m}'
         ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
         ss.ios.dependency 'mParticle-Apple-Media-SDK', '~> 1.3'
-        ss.ios.dependency 'ACPMedia', '~> 1.0'
-        ss.ios.dependency 'ACPAnalytics', '~> 2.0'
-        ss.ios.dependency 'ACPCore', '~> 2.0'
-        ss.ios.dependency 'ACPUserProfile', '~> 2.0'
+        ss.ios.dependency 'AEPMedia', '~> 3.0'
+        ss.ios.dependency 'AEPAnalytics', '~> 3.0'
+        ss.ios.dependency 'AEPCore', '~> 3.2'
+        ss.ios.dependency 'AEPUserProfile', '~> 3.0'
+        ss.ios.dependency 'AEPIdentity', '~> 3.2'
+        ss.ios.dependency 'AEPLifecycle', '~> 3.2'
+        ss.ios.dependency 'AEPSignal', '~> 3.2'
     end
 end

@@ -1,13 +1,13 @@
 #import "MPKitAdobeMedia.h"
 #import "MPIAdobe.h"
-#import "ACPCore.h"
-#import "ACPAnalytics.h"
-#import "ACPMedia.h"
-#import "ACPUserProfile.h"
-#import "ACPIdentity.h"
-#import "ACPLifecycle.h"
-#import "ACPSignal.h"
-#import "ACPMediaConstants.h"
+@import AEPCore;
+@import AEPAnalytics;
+@import AEPMedia;
+@import AEPUserProfile;
+@import AEPIdentity;
+@import AEPLifecycle;
+@import AEPSignal;
+@import AEPServices;
 
 @import mParticle_Apple_Media_SDK;
 @import mParticle_Apple_SDK;
@@ -30,7 +30,7 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 
 @property (nonatomic) NSString *organizationId;
 @property (nonatomic) MPIAdobe *adobe;
-@property ACPMediaTracker *mediaTracker;
+@property id<AEPMediaTracker> mediaTracker;
 @property (nonatomic) BOOL hasSetMCID;
 @property (nonatomic) NSString *pushToken;
 @property (nonatomic) NSString *audienceManagerServer;
@@ -88,24 +88,13 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
     NSString *launchAppId  = _configuration[launchAppIdKey];
     
     dispatch_once(&kitPredicate, ^{
+        [AEPMobileCore setLogLevel:AEPLogLevelDebug];
         if (launchAppId != nil) {
-            [ACPCore setLogLevel:ACPMobileLogLevelDebug];
-            [ACPCore configureWithAppId:launchAppId];
-            [ACPAnalytics registerExtension];
-            [ACPMedia registerExtension];
-            [ACPUserProfile registerExtension];
-            [ACPIdentity registerExtension];
-            [ACPLifecycle registerExtension];
-            [ACPSignal registerExtension];
-            
-            [ACPCore start:^{
+            [AEPMobileCore registerExtensions:@[AEPMobileAnalytics.class, AEPMobileMedia.class, AEPMobileUserProfile.class, AEPMobileSignal.class, AEPMobileLifecycle.class, AEPMobileIdentity.class] completion:^{
+                [AEPMobileCore configureWithAppId:launchAppId];
                 NSMutableDictionary* config = [NSMutableDictionary dictionary];
-
-                [ACPMedia createTrackerWithConfig: config
-                                         callback:^(ACPMediaTracker * _Nullable mediaTracker) {
-                    self.mediaTracker = mediaTracker;
-                    NSLog(@"mParticle -> Adobe Media configured");
-                }];
+                self.mediaTracker = [AEPMobileMedia createTrackerWithConfig:config];;
+                NSLog(@"mParticle -> Adobe Media configured");
             }];
         } else {
             NSLog(@"mParticle -> Adobe Media not configured");
@@ -165,32 +154,32 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
             break;
         case MPMediaEventNameSessionStart: {
             NSString *streamType = [self streamTypeForMediaEvent:mediaEvent];
-            ACPMediaType contentType = [self contentTypeForMediaEvent:mediaEvent];
+            AEPMediaType contentType = [self contentTypeForMediaEvent:mediaEvent];
             
-            NSDictionary *mediaObject = [ACPMedia createMediaObjectWithName:mediaEvent.mediaContentTitle mediaId:mediaEvent.mediaContentId length:mediaEvent.duration.doubleValue streamType:streamType mediaType:contentType];
+            NSDictionary *mediaObject = [AEPMobileMedia createMediaObjectWith:mediaEvent.mediaContentTitle id:mediaEvent.mediaContentId length:mediaEvent.duration.doubleValue streamType:streamType mediaType:contentType];
 
             NSMutableDictionary *mediaMetadata = [[NSMutableDictionary alloc] init];
 
-            [_mediaTracker trackSessionStart:mediaObject data:mediaMetadata];
+            [_mediaTracker trackSessionStart:mediaObject metadata:mediaMetadata];
             break;
         }
         case MPMediaEventNameSessionEnd:
             [_mediaTracker trackSessionEnd];
             break;
         case MPMediaEventNameSeekStart: {
-            [_mediaTracker trackEvent:ACPMediaEventSeekStart info:nil data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventSeekStart info:nil metadata:nil];
             break;
         }
         case MPMediaEventNameSeekEnd: {
-            [_mediaTracker trackEvent:ACPMediaEventSeekComplete info:nil data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventSeekComplete info:nil metadata:nil];
             break;
         }
         case MPMediaEventNameBufferStart: {
-            [_mediaTracker trackEvent:ACPMediaEventBufferStart info:nil data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventBufferStart info:nil metadata:nil];
             break;
         }
         case MPMediaEventNameBufferEnd: {
-            [_mediaTracker trackEvent:ACPMediaEventBufferComplete info:nil data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventBufferComplete info:nil metadata:nil];
             break;
         }
         case MPMediaEventNameUpdatePlayheadPosition:
@@ -200,62 +189,62 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
             //Media does not track Ad interaction
             break;
         case MPMediaEventNameAdBreakStart: {
-            NSDictionary* adBreakObject = [ACPMedia createAdBreakObjectWithName:mediaEvent.adBreak.title position:1 startTime:0];
+            NSDictionary* adBreakObject = [AEPMobileMedia createAdBreakObjectWith:mediaEvent.adBreak.title position:1 startTime:0];
             
-            [_mediaTracker trackEvent:ACPMediaEventAdBreakStart info:adBreakObject data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventAdBreakStart info:adBreakObject metadata:nil];
             break;
         }
         case MPMediaEventNameAdBreakEnd: {
-            [_mediaTracker trackEvent:ACPMediaEventAdBreakComplete info:nil data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventAdBreakComplete info:nil metadata:nil];
             break;
         }
         case MPMediaEventNameAdStart: {
-            NSDictionary* adObject = [ACPMedia createAdObjectWithName:mediaEvent.adContent.title adId:mediaEvent.adContent.id position:mediaEvent.adContent.position.doubleValue length:mediaEvent.adContent.duration.doubleValue];
+            NSDictionary* adObject = [AEPMobileMedia createAdObjectWith:mediaEvent.adContent.title id:mediaEvent.adContent.id position:mediaEvent.adContent.position.doubleValue length:mediaEvent.adContent.duration.doubleValue];
             NSMutableDictionary* adMetadata = [[NSMutableDictionary alloc] init];
             
             if (mediaEvent.adContent.advertiser != nil) {
-                [adMetadata setObject:mediaEvent.adContent.advertiser forKey:ACPAdMetadataKeyAdvertiser];
+                [adMetadata setObject:mediaEvent.adContent.advertiser forKey:AEPAdMetadataKeys.ADVERTISER];
             }
             if (mediaEvent.adContent.campaign != nil) {
-                [adMetadata setObject:mediaEvent.adContent.campaign forKey:ACPAdMetadataKeyCampaignId];
+                [adMetadata setObject:mediaEvent.adContent.campaign forKey:AEPAdMetadataKeys.CAMPAIGN_ID];
             }
             if (mediaEvent.adContent.creative != nil) {
-                [adMetadata setObject:mediaEvent.adContent.creative forKey:ACPAdMetadataKeyCreativeId];
+                [adMetadata setObject:mediaEvent.adContent.creative forKey:AEPAdMetadataKeys.CREATIVE_ID];
             }
             if (mediaEvent.adContent.placement != nil) {
-                [adMetadata setObject:mediaEvent.adContent.placement forKey:ACPAdMetadataKeyPlacementId];
+                [adMetadata setObject:mediaEvent.adContent.placement forKey:AEPAdMetadataKeys.PLACEMENT_ID];
             }
             if (mediaEvent.adContent.siteId != nil) {
-                [adMetadata setObject:mediaEvent.adContent.siteId forKey:ACPAdMetadataKeyCreativeUrl];
+                [adMetadata setObject:mediaEvent.adContent.siteId forKey:AEPAdMetadataKeys.CREATIVE_URL];
             }
             
-            [_mediaTracker trackEvent:ACPMediaEventAdStart info:adObject data:adMetadata];
+            [_mediaTracker trackEvent:AEPMediaEventAdStart info:adObject metadata:adMetadata];
             break;
         }
         case MPMediaEventNameAdEnd: {
-            [_mediaTracker trackEvent:ACPMediaEventAdComplete info:nil data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventAdComplete info:nil metadata:nil];
             break;
         }
         case MPMediaEventNameAdSkip: {
-            [_mediaTracker trackEvent:ACPMediaEventAdSkip info:nil data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventAdSkip info:nil metadata:nil];
             break;
         }
         case MPMediaEventNameSegmentStart: {
-            NSDictionary* chapterObject = [ACPMedia createChapterObjectWithName:mediaEvent.segment.title position:mediaEvent.segment.index length:mediaEvent.segment.duration.doubleValue startTime:mediaEvent.playheadPosition.doubleValue];
+            NSDictionary* chapterObject = [AEPMobileMedia createChapterObjectWith:mediaEvent.segment.title position:mediaEvent.segment.index length:mediaEvent.segment.duration.doubleValue startTime:mediaEvent.playheadPosition.doubleValue];
             
-            [_mediaTracker trackEvent:ACPMediaEventChapterStart info:chapterObject data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventChapterStart info:chapterObject metadata:nil];
             break;
         }
         case MPMediaEventNameSegmentSkip: {
-            [_mediaTracker trackEvent:ACPMediaEventChapterSkip info:nil data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventChapterSkip info:nil metadata:nil];
            break;
        }
         case MPMediaEventNameSegmentEnd:  {
-            [_mediaTracker trackEvent:ACPMediaEventChapterComplete info:nil data:nil];
+            [_mediaTracker trackEvent:AEPMediaEventChapterComplete info:nil metadata:nil];
            break;
        }
         case MPMediaEventNameUpdateQoS: {
-            NSDictionary* mediaQoS = [ACPMedia createQoEObjectWithBitrate:mediaEvent.qos.bitRate.doubleValue startupTime:mediaEvent.qos.startupTime.doubleValue fps:mediaEvent.qos.fps.doubleValue droppedFrames:mediaEvent.qos.droppedFrames.doubleValue];
+            NSDictionary* mediaQoS = [AEPMobileMedia createQoEObjectWith:mediaEvent.qos.bitRate.doubleValue startTime:mediaEvent.qos.startupTime.doubleValue fps:mediaEvent.qos.fps.doubleValue droppedFrames:mediaEvent.qos.droppedFrames.doubleValue];
             
             [_mediaTracker updateQoEObject:mediaQoS];
            break;
@@ -271,26 +260,26 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 - (NSString *)streamTypeForMediaEvent:(MPMediaEvent *)mediaEvent  {
     if (mediaEvent.streamType == MPMediaStreamTypeOnDemand) {
         if (mediaEvent.contentType == MPMediaContentTypeVideo) {
-            return ACPMediaStreamTypeVod;
+            return AEPMediaStreamType.VOD;
         } else {
-            return ACPMediaStreamTypeAod;
+            return AEPMediaStreamType.AOD;
         }
     } else if (mediaEvent.streamType == MPMediaStreamTypeLinear) {
-        return ACPMediaStreamTypeLinear;
+        return AEPMediaStreamType.LINEAR;
     } else if (mediaEvent.streamType == MPMediaStreamTypePodcast) {
-        return ACPMediaStreamTypePodcast;
+        return AEPMediaStreamType.PODCAST;
     } else if (mediaEvent.streamType == MPMediaStreamTypeAudiobook) {
-        return ACPMediaStreamTypeAudiobook;
+        return AEPMediaStreamType.AUDIOBOOK;
     } else {
-        return ACPMediaStreamTypeLive;
+        return AEPMediaStreamType.LIVE;
     }
 }
 
-- (ACPMediaType)contentTypeForMediaEvent:(MPMediaEvent *)mediaEvent  {
+- (AEPMediaType)contentTypeForMediaEvent:(MPMediaEvent *)mediaEvent  {
     if (mediaEvent.contentType == MPMediaContentTypeVideo) {
-        return ACPMediaTypeVideo;
+        return AEPMediaTypeVideo;
     } else {
-        return ACPMediaTypeAudio;
+        return AEPMediaTypeAudio;
     }
 }
 
