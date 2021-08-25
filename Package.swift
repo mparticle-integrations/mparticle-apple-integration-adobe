@@ -22,18 +22,6 @@ let package = Package(
             name: "AEPCore",
             url: "https://github.com/adobe/aepsdk-core-ios.git",
             .upToNextMajor(from: "3.2.0")),
-//        .package(
-//            name: "AEPIdentity",
-//            url: "https://github.com/adobe/aepsdk-core-ios.git",
-//            .upToNextMajor(from: "3.2.0")),
-//        .package(
-//            name: "AEPLifecycle",
-//            url: "https://github.com/adobe/aepsdk-core-ios.git",
-//            .upToNextMajor(from: "3.2.0")),
-//        .package(
-//            name: "AEPSignal",
-//            url: "https://github.com/adobe/aepsdk-core-ios.git",
-//            .upToNextMajor(from: "3.2.0")),
         .package(name: "AEPUserProfile",
             url: "https://github.com/adobe/aepsdk-userprofile-ios.git",
             .upToNextMajor(from: "3.0.0")),
@@ -53,7 +41,18 @@ let package = Package(
             publicHeadersPath: "."),
         .target(
             name: "mParticle-Adobe-Media",
-            dependencies: ["mParticle-Apple-SDK", "mParticle-Apple-Media-SDK", "AEPCore", "AEPMedia", "AEPAnalytics", "AEPUserProfile"], //"AEPIdentity", "AEPLifecycle", "AEPSignal"],
+//            dependencies: ["mParticle-Apple-SDK", "mParticle-Apple-Media-SDK", "AEPCore", "AEPMedia", "AEPAnalytics", "AEPUserProfile"], //"AEPIdentity", "AEPLifecycle", "AEPSignal"],
+            dependencies: [
+                .byName(name: "mParticle-Apple-SDK"),
+                .byName(name: "mParticle-Apple-Media-SDK"),
+                .byName(name: "AEPUserProfile"),
+                .byName(name: "AEPCore"),
+                .byName(name: "AEPMedia"),
+                .byName(name: "AEPAnalytics"),
+                .product(name: "AEPIdentity", package: "AEPCore"),
+                .product(name: "AEPLifecycle", package: "AEPCore"),
+                .product(name: "AEPSignal", package: "AEPCore"),
+            ],
             path: "mParticle-Adobe-Media",
             exclude: ["Dummy.swift"],
             publicHeadersPath: "."),
