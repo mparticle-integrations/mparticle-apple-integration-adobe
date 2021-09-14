@@ -6,13 +6,13 @@ This repository contains the [Adobe](https://www.adobe.com) integration for the 
 
 1. Add the kit dependency to your app's package management file:
 
-> To send media data to Adobe, you must use CocoaPods or SPM since their SDKs do not support Carthage
+> To send media data to Adobe, you must use CocoaPods or SPM since their SDKs do not support Carthage (iOS only)
 
 ```
 pod 'mParticle-Adobe/AdobeMedia', '~> 8.0'
 ```
 
-> Otherwise, for the previous non-media Adobe integration, you can integrate via Carthage or CocoaPods
+> Otherwise, for the previous non-media Adobe integration, you can integrate via Carthage or CocoaPods (iOS and tvOS)
 
 ```
 pod 'mParticle-Adobe/Adobe', '~> 8.0'
