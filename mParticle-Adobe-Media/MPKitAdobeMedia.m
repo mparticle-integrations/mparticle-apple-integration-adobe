@@ -79,7 +79,6 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 @property (nonatomic) NSString *organizationId;
 @property (nonatomic) MPIAdobe *adobe;
 @property id<AEPMediaTracker> mediaTracker;
-@property (nonatomic) BOOL hasSetMCID;
 @property (nonatomic) NSString *pushToken;
 @property (nonatomic) NSString *audienceManagerServer;
 
@@ -383,7 +382,6 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
         marketingCloudId = [_adobe marketingCloudIdFromUserDefaults];
         if (marketingCloudId.length) {
             [[MParticle sharedInstance] setIntegrationAttributes:@{marketingCloudIdIntegrationAttributeKey: marketingCloudId} forKit:[[self class] kitCode]];
-            _hasSetMCID = YES;
         }
     }
     
@@ -398,8 +396,11 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
         }
         
         NSMutableDictionary *integrationAttributes = [NSMutableDictionary dictionary];
-        if (marketingCloudId.length) {
+        NSString *existingMarketingCloudId = [self marketingCloudIdFromIntegrationAttributes];
+        if (marketingCloudId.length && existingMarketingCloudId.length == 0) {
             [integrationAttributes setObject:marketingCloudId forKey:marketingCloudIdIntegrationAttributeKey];
+        } else {
+            [integrationAttributes setObject:existingMarketingCloudId forKey:marketingCloudIdIntegrationAttributeKey];
         }
         if (locationHint.length) {
             [integrationAttributes setObject:locationHint forKey:locationHintIntegrationAttributeKey];
@@ -410,7 +411,6 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
         
         if (integrationAttributes.count) {
             [[MParticle sharedInstance] setIntegrationAttributes:integrationAttributes forKit:[[self class] kitCode]];
-            self->_hasSetMCID = YES;
         }
     }];
 }
@@ -436,7 +436,8 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 }
 
 - (BOOL)shouldDelayMParticleUpload {
-    return !_hasSetMCID;
+    NSString *marketingCloudId = [self marketingCloudIdFromIntegrationAttributes];
+    return marketingCloudId.length == 0;
 }
 
 - (MPKitAPI *)kitApi {
