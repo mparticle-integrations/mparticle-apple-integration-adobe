@@ -77,11 +77,11 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 @interface MPKitAdobeMedia ()
 
 @property (nonatomic) NSString *organizationId;
-@property (nonatomic) MPIAdobe *adobe;
 @property id<AEPMediaTracker> defaultMediaTracker;
 @property (nonatomic, strong, nonnull) NSMutableDictionary<NSString *, id<AEPMediaTracker>> *mediaTrackers;
 @property (nonatomic) NSString *pushToken;
 @property (nonatomic) NSString *audienceManagerServer;
+@property (atomic) BOOL syncingId;
 
 @end
 
@@ -341,11 +341,11 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 }
 
 - (void)didEnterBackground:(NSNotification *)notification {
-    [self sendNetworkRequest];
+    [self syncId];
 }
 
 - (void)willTerminate:(NSNotification *)notification {
-    [self sendNetworkRequest];
+    [self syncId];
 }
 
 - (FilteredMParticleUser *)currentUser {
@@ -386,60 +386,38 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
     return _pushToken;
 }
 
-- (void)sendNetworkRequest {
+- (void)syncId {
+    if (self.syncingId) return;
+    
     NSString *marketingCloudId = [self marketingCloudIdFromIntegrationAttributes];
     if (!marketingCloudId) {
-        marketingCloudId = [_adobe marketingCloudIdFromUserDefaults];
-        if (marketingCloudId.length) {
-            [[MParticle sharedInstance] setIntegrationAttributes:@{marketingCloudIdIntegrationAttributeKey: marketingCloudId} forKit:[[self class] kitCode]];
-        }
+        self.syncingId = YES;
+        [AEPMobileIdentity getExperienceCloudId:^(NSString * _Nullable mid, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"mParticle -> Adobe Media - Error getting Adobe cloud experience Id (marketing cloud Id): %@", error);
+            } else {
+                [[MParticle sharedInstance] setIntegrationAttributes:@{marketingCloudIdIntegrationAttributeKey: mid} forKit:[[self class] kitCode]];
+            }
+            self.syncingId = NO;
+        }];
     }
-    
-    NSString *advertiserId = [self advertiserId];
-    NSString *pushToken = [self pushToken];
-    FilteredMParticleUser *user = [self currentUser];
-    NSDictionary *userIdentities = user.userIdentities;
-    [_adobe sendRequestWithMarketingCloudId:marketingCloudId advertiserId:advertiserId pushToken:pushToken organizationId:_organizationId userIdentities:userIdentities audienceManagerServer:_audienceManagerServer completion:^(NSString *marketingCloudId, NSString *locationHint, NSString *blob, NSError *error) {
-        if (error) {
-            NSLog(@"mParticle -> Adobe kit request failed with error: %@", error);
-            return;
-        }
-        
-        NSMutableDictionary *integrationAttributes = [NSMutableDictionary dictionary];
-        NSString *existingMarketingCloudId = [self marketingCloudIdFromIntegrationAttributes];
-        if (marketingCloudId.length && existingMarketingCloudId.length == 0) {
-            [integrationAttributes setObject:marketingCloudId forKey:marketingCloudIdIntegrationAttributeKey];
-        } else {
-            [integrationAttributes setObject:existingMarketingCloudId forKey:marketingCloudIdIntegrationAttributeKey];
-        }
-        if (locationHint.length) {
-            [integrationAttributes setObject:locationHint forKey:locationHintIntegrationAttributeKey];
-        }
-        if (blob.length) {
-            [integrationAttributes setObject:blob forKey:blobIntegrationAttributeKey];
-        }
-        
-        if (integrationAttributes.count) {
-            [[MParticle sharedInstance] setIntegrationAttributes:integrationAttributes forKit:[[self class] kitCode]];
-        }
-    }];
 }
 
 - (MPKitExecStatus *)setDeviceToken:(NSData *)deviceToken {
     _pushToken = [[NSString alloc] initWithData:deviceToken encoding:NSUTF8StringEncoding];
-    [self sendNetworkRequest];
+    [self syncId];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
 
 - (MPKitExecStatus *)setUserIdentity:(NSString *)identityString identityType:(MPUserIdentity)identityType {
-    [self sendNetworkRequest];
+    [self syncId];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
 
 - (nonnull MPKitExecStatus *)didBecomeActive {
-    [self sendNetworkRequest];
+    [self syncId];
     
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAdobe) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
