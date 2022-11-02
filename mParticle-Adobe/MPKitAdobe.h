@@ -21,5 +21,6 @@
 @property (nonatomic, strong, nullable) MPKitAPI *kitApi;
 
 + (void)overrideMarketingCloudId:(NSString * _Nullable)mid;
++ (void)willOverrideMarketingCloudId:(BOOL)willOverrideMid;
 
 @end
