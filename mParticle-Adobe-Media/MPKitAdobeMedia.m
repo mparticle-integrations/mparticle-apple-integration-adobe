@@ -419,7 +419,6 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 
 - (nonnull MPKitExecStatus *)didBecomeActive {
     [self syncId];
-    
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAdobe) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
@@ -433,7 +432,6 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
     if (_kitApi == nil) {
         _kitApi = [[MPKitAPI alloc] init];
     }
-    
     return _kitApi;
 }
 
