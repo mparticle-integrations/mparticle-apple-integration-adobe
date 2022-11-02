@@ -28,6 +28,8 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 
 @implementation MPKitAdobe
 
+static NSString *_midOverride = nil;
+
 + (NSNumber *)kitCode {
     return @124;
 }
@@ -39,6 +41,9 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
     [MParticle registerExtension:kitRegister];
 }
 
++ (void)overrideMarketingCloudId:(NSString *)mid {
+    _midOverride = mid;
+}
 
 #pragma mark MPKitInstanceProtocol methods
 
@@ -119,12 +124,15 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 }
 
 - (void)sendNetworkRequest {
-    NSString *marketingCloudId = [self marketingCloudIdFromIntegrationAttributes];
+    NSString *marketingCloudId = _midOverride;
     if (!marketingCloudId) {
-        marketingCloudId = [_adobe marketingCloudIdFromUserDefaults];
-        if (marketingCloudId.length) {
-            [[MParticle sharedInstance] setIntegrationAttributes:@{marketingCloudIdIntegrationAttributeKey: marketingCloudId} forKit:[[self class] kitCode]];
-            _hasSetMCID = YES;
+        marketingCloudId = [self marketingCloudIdFromIntegrationAttributes];
+        if (!marketingCloudId) {
+            marketingCloudId = [_adobe marketingCloudIdFromUserDefaults];
+            if (marketingCloudId.length) {
+                [[MParticle sharedInstance] setIntegrationAttributes:@{marketingCloudIdIntegrationAttributeKey: marketingCloudId} forKit:[[self class] kitCode]];
+                _hasSetMCID = YES;
+            }
         }
     }
     
@@ -140,7 +148,7 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
         
         NSMutableDictionary *integrationAttributes = [NSMutableDictionary dictionary];
         if (marketingCloudId.length) {
-            [integrationAttributes setObject:marketingCloudId forKey:marketingCloudIdIntegrationAttributeKey];
+            [integrationAttributes setObject:(_midOverride ?: marketingCloudId) forKey:marketingCloudIdIntegrationAttributeKey];
         }
         if (locationHint.length) {
             [integrationAttributes setObject:locationHint forKey:locationHintIntegrationAttributeKey];
