@@ -150,6 +150,8 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
         }
 
         self->_started = YES;
+        
+        [self syncId];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             NSDictionary *userInfo = @{mParticleKitInstanceKey:[[self class] kitCode]};
@@ -179,7 +181,6 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
      MPKitExecStatus *status = nil;
      if ([event isKindOfClass:[MPMediaEvent class]]) {
          MPMediaEvent *mediaEvent = (MPMediaEvent *)event;
-
          status = [self routeMediaEvent:mediaEvent];
      } else if ([event isKindOfClass:[MPEvent class]]) {
          status = [self execStatus:MPKitReturnCodeSuccess];
@@ -389,18 +390,18 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 - (void)syncId {
     if (self.syncingId) return;
     
-    NSString *marketingCloudId = [self marketingCloudIdFromIntegrationAttributes];
-    if (!marketingCloudId) {
-        self.syncingId = YES;
-        [AEPMobileIdentity getExperienceCloudId:^(NSString * _Nullable mid, NSError * _Nullable error) {
-            if (error) {
-                NSLog(@"mParticle -> Adobe Media - Error getting Adobe cloud experience Id (marketing cloud Id): %@", error);
-            } else {
+    self.syncingId = YES;
+    [AEPMobileIdentity getExperienceCloudId:^(NSString * _Nullable mid, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"mParticle -> Adobe Media - Error getting Adobe cloud experience Id (marketing cloud Id): %@", error);
+        } else {
+            NSString *existingMid = [self marketingCloudIdFromIntegrationAttributes];
+            if (mid.length > 0 && ![mid isEqualToString:existingMid]) {
                 [[MParticle sharedInstance] setIntegrationAttributes:@{marketingCloudIdIntegrationAttributeKey: mid} forKit:[[self class] kitCode]];
             }
-            self.syncingId = NO;
-        }];
-    }
+        }
+        self.syncingId = NO;
+    }];
 }
 
 - (MPKitExecStatus *)setDeviceToken:(NSData *)deviceToken {
@@ -425,7 +426,7 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 
 - (BOOL)shouldDelayMParticleUpload {
     NSString *marketingCloudId = [self marketingCloudIdFromIntegrationAttributes];
-    return marketingCloudId.length == 0;
+    return marketingCloudId.length == 0 || self.syncingId;
 }
 
 - (MPKitAPI *)kitApi {
