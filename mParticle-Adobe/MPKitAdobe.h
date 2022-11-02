@@ -20,4 +20,6 @@
 @property (nonatomic, unsafe_unretained, readonly) BOOL started;
 @property (nonatomic, strong, nullable) MPKitAPI *kitApi;
 
++ (void)overrideMarketingCloudId:(NSString * _Nullable)mid;
+
 @end
