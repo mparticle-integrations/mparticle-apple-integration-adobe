@@ -29,6 +29,7 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 @implementation MPKitAdobe
 
 static NSString *_midOverride = nil;
+static BOOL _willOverrideMid = NO;
 
 + (NSNumber *)kitCode {
     return @124;
@@ -41,13 +42,23 @@ static NSString *_midOverride = nil;
     [MParticle registerExtension:kitRegister];
 }
 
+static __weak MPKitAdobe *_sharedInstance = nil;
 + (void)overrideMarketingCloudId:(NSString *)mid {
     _midOverride = mid;
+    if (mid) {
+        [[MParticle sharedInstance] setIntegrationAttributes:@{marketingCloudIdIntegrationAttributeKey: mid} forKit:[[self class] kitCode]];
+    }
+    [_sharedInstance performSelectorOnMainThread:@selector(sendNetworkRequest) withObject:nil waitUntilDone:NO];
+}
+
++ (void)willOverrideMarketingCloudId:(BOOL)willOverrideMid {
+    _willOverrideMid = willOverrideMid;
 }
 
 #pragma mark MPKitInstanceProtocol methods
 
 - (MPKitExecStatus *)didFinishLaunchingWithConfiguration:(NSDictionary *)configuration {
+    _sharedInstance = self;
     MPKitExecStatus *execStatus = nil;
     
     _organizationId = [configuration[organizationIdConfigurationKey] copy];
@@ -124,6 +135,10 @@ static NSString *_midOverride = nil;
 }
 
 - (void)sendNetworkRequest {
+    if (_willOverrideMid && !_midOverride) {
+        return;
+    }
+    
     NSString *marketingCloudId = _midOverride;
     if (!marketingCloudId) {
         marketingCloudId = [self marketingCloudIdFromIntegrationAttributes];
