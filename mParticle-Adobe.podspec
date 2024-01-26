@@ -21,13 +21,6 @@ Pod::Spec.new do |s|
     s.ios.deployment_target = "10.0"
     s.tvos.deployment_target = "10.0"
 
-    s.ios.pod_target_xcconfig = {
-        'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
-    }
-    s.ios.user_target_xcconfig = {
-        'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
-    }
-
     s.ios.framework = 'UIKit'
 
     s.subspec 'Adobe' do |ss|

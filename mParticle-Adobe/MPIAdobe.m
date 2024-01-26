@@ -1,9 +1,14 @@
 // Be sure to apply changes to both copies of this file in the repository
 #import "MPIAdobe.h"
 #if defined(__has_include) && __has_include(<mParticle_Apple_SDK/mParticle.h>)
-#import <mParticle_Apple_SDK/mParticle.h>
+    #import <mParticle_Apple_SDK/mParticle.h>
+    #import <mParticle_Apple_SDK/mParticle_Apple_SDK-Swift.h>
+#elif defined(__has_include) && __has_include(<mParticle_Apple_SDK_NoLocation/mParticle.h>)
+    #import <mParticle_Apple_SDK_NoLocation/mParticle.h>
+    #import <mParticle_Apple_SDK_NoLocation/mParticle_Apple_SDK-Swift.h>
 #else
-#import "mParticle.h"
+    #import "mParticle.h"
+    #import "mParticle_Apple_SDK-Swift.h"
 #endif
 
 NSString *const MPIAdobeErrorKey = @"MPIAdobeErrorKey";
