@@ -2,63 +2,62 @@
 #import "MPIAdobe.h"
 #if defined(__has_include) && __has_include(<AEPCore/AEPCore.h>)
 #import <AEPCore/AEPCore.h>
-#elseif defined(__has_include) && __has_include(AEPCore.h)
+#elif defined(__has_include) && __has_include("AEPCore.h")
 #import "AEPCore.h"
 #else
 @import AEPCore;
 #endif
 #if defined(__has_include) && __has_include(<AEPAnalytics/AEPAnalytics.h>)
 #import <AEPAnalytics/AEPAnalytics.h>
-#elseif defined(__has_include) && __has_include(AEPAnalytics.h)
+#elif defined(__has_include) && __has_include("AEPAnalytics.h")
 #import "AEPAnalytics.h"
 #else
 @import AEPAnalytics;
 #endif
 #if defined(__has_include) && __has_include(<AEPMedia/AEPMedia.h>)
 #import <AEPMedia/AEPMedia.h>
-#elseif defined(__has_include) && __has_include(AEPMedia.h)
+#elif defined(__has_include) && __has_include("AEPMedia.h")
 #import "AEPMedia.h"
 #else
 @import AEPMedia;
 #endif
 #if defined(__has_include) && __has_include(<AEPUserProfile/AEPUserProfile.h>)
 #import <AEPUserProfile/AEPUserProfile.h>
-#elseif defined(__has_include) && __has_include(AEPUserProfile.h)
+#elif defined(__has_include) && __has_include("AEPUserProfile.h")
 #import "AEPUserProfile.h"
 #else
 @import AEPUserProfile;
 #endif
 #if defined(__has_include) && __has_include(<AEPIdentity/AEPIdentity.h>)
 #import <AEPIdentity/AEPIdentity.h>
-#elseif defined(__has_include) && __has_include(AEPIdentity.h)
+#elif defined(__has_include) && __has_include("AEPIdentity.h")
 #import "AEPIdentity.h"
 #else
 @import AEPIdentity;
 #endif
 #if defined(__has_include) && __has_include(<AEPLifecycle/AEPLifecycle.h>)
 #import <AEPLifecycle/AEPLifecycle.h>
-#elseif defined(__has_include) && __has_include(AEPLifecycle.h)
+#elif defined(__has_include) && __has_include("AEPLifecycle.h")
 #import "AEPLifecycle.h"
 #else
 @import AEPLifecycle;
 #endif
 #if defined(__has_include) && __has_include(<AEPSignal/AEPSignal.h>)
 #import <AEPSignal/AEPSignal.h>
-#elseif defined(__has_include) && __has_include(AEPSignal.h)
+#elif defined(__has_include) && __has_include("AEPSignal.h")
 #import "AEPSignal.h"
 #else
 @import AEPSignal;
 #endif
 #if defined(__has_include) && __has_include(<AEPServices/AEPServices.h>)
 #import <AEPServices/AEPServices.h>
-#elseif defined(__has_include) && __has_include(AEPServices.h)
+#elif defined(__has_include) && __has_include("AEPServices.h")
 #import "AEPServices.h"
 #else
 @import AEPServices;
 #endif
 
 @import mParticle_Apple_Media_SDK;
-@import mParticle_Apple_SDK;
 
 static NSString *const marketingCloudIdIntegrationAttributeKey = @"mid";
 static NSString *const blobIntegrationAttributeKey = @"aamb";

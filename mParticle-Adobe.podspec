@@ -18,33 +18,35 @@ Pod::Spec.new do |s|
 
     s.default_subspec = 'AdobeMedia'
 
-    s.ios.deployment_target = "10.0"
-    s.tvos.deployment_target = "10.0"
-
-    s.ios.framework = 'UIKit'
+    s.ios.deployment_target = "12.0"
+    s.tvos.deployment_target = "12.0"
 
     s.subspec 'Adobe' do |ss|
         ss.ios.source_files = 'mParticle-Adobe/*.{h,m}'
-        ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
+        ss.ios.resource_bundles  = { 'mParticle-Adobe-Privacy' => ['mParticle-Adobe/PrivacyInfo.xcprivacy'] }
+        ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.22'
         
         ss.tvos.source_files = 'mParticle-Adobe/*.{h,m}'
-        ss.tvos.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
+        ss.tvos.resource_bundles  = { 'mParticle-Adobe-Privacy' => ['mParticle-Adobe/PrivacyInfo.xcprivacy'] }
+        ss.tvos.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.22'
     end
 
     s.subspec 'AdobeMedia' do |ss|
         ss.ios.source_files = 'mParticle-Adobe-Media/*.{h,m}'
-        ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
-        ss.ios.dependency 'mParticle-Apple-Media-SDK', '~> 1.3'
-        ss.ios.dependency 'AEPMedia', '~> 3.0'
-        ss.ios.dependency 'AEPAnalytics', '~> 3.0'
-        ss.ios.dependency 'AEPCore', '~> 3.2'
-        ss.ios.dependency 'AEPUserProfile', '~> 3.0'
-        ss.ios.dependency 'AEPIdentity', '~> 3.2'
-        ss.ios.dependency 'AEPLifecycle', '~> 3.2'
-        ss.ios.dependency 'AEPSignal', '~> 3.2'
+        ss.ios.resource_bundles  = { 'mParticle-Adobe-Media-Privacy' => ['mParticle-Adobe-Media/PrivacyInfo.xcprivacy'] }
+        ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.22'
+        ss.ios.dependency 'mParticle-Apple-Media-SDK', '~> 1.5'
+        ss.ios.dependency 'AEPMedia', '~> 5.0'
+        ss.ios.dependency 'AEPAnalytics', '~> 5.0'
+        ss.ios.dependency 'AEPCore', '~> 5.0'
+        ss.ios.dependency 'AEPUserProfile', '~> 5.0'
+        ss.ios.dependency 'AEPIdentity', '~> 5.0'
+        ss.ios.dependency 'AEPLifecycle', '~> 5.0'
+        ss.ios.dependency 'AEPSignal', '~> 5.0'
 
         # AdobeMedia is not supported on tvOS, so just pull in standard Adobe Kit code
         ss.tvos.source_files = 'mParticle-Adobe/*.{h,m}'
-        ss.tvos.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
+        ss.tvos.resource_bundles  = { 'mParticle-Adobe-Privacy' => ['mParticle-Adobe/PrivacyInfo.xcprivacy'] }
+        ss.tvos.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.22'
     end
 end
