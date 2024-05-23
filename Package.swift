@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "mParticle-Adobe",
-    platforms: [.iOS(.v10)],
+    platforms: [.iOS(.v12)],
     products: [
         .library(name: "mParticle-Adobe", targets: ["mParticle-Adobe"]),
         .library(name: "mParticle-Adobe-Media", targets: ["mParticle-Adobe-Media"])
@@ -21,16 +21,16 @@ let package = Package(
         .package(
             name: "AEPCore",
             url: "https://github.com/adobe/aepsdk-core-ios.git",
-            .upToNextMajor(from: "3.2.0")),
+            .upToNextMajor(from: "5.0.0")),
         .package(name: "AEPUserProfile",
             url: "https://github.com/adobe/aepsdk-userprofile-ios.git",
-            .upToNextMajor(from: "3.0.0")),
+            .upToNextMajor(from: "5.0.0")),
         .package(name: "AEPAnalytics",
             url: "https://github.com/adobe/aepsdk-analytics-ios.git",
-            .upToNextMajor(from: "3.0.0")),
+            .upToNextMajor(from: "5.0.0")),
         .package(name: "AEPMedia",
             url: "https://github.com/adobe/aepsdk-media-ios.git",
-            .upToNextMajor(from: "3.0.0"))
+            .upToNextMajor(from: "5.0.0"))
 
     ],
     targets: [
@@ -38,6 +38,8 @@ let package = Package(
             name: "mParticle-Adobe",
             dependencies: ["mParticle-Apple-SDK"],
             path: "mParticle-Adobe",
+            exclude: ["Dummy.swift", "Info.plist"],
+            resources: [.process("PrivacyInfo.xcprivacy")],
             publicHeadersPath: "."),
         .target(
             name: "mParticle-Adobe-Media",
@@ -53,7 +55,8 @@ let package = Package(
                 .product(name: "AEPSignal", package: "AEPCore"),
             ],
             path: "mParticle-Adobe-Media",
-            exclude: ["Dummy.swift"],
+            exclude: ["Dummy.swift", "Info.plist"],
+            resources: [.process("PrivacyInfo.xcprivacy")],
             publicHeadersPath: "."),
     ]
 )
