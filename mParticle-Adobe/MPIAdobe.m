@@ -74,8 +74,8 @@ static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_M
 
 @interface MPIAdobe ()
 
-@property (nonatomic) NSString *region;
-@property (nonatomic) NSString *blob;
+@property (nonatomic, copy) NSString *region;
+@property (nonatomic, copy) NSString *blob;
 
 @end
 
