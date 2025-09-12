@@ -172,13 +172,9 @@ static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_M
             return callbackWithCode(MPIAdobeErrorCodeServerError, @"Server returned an error", error);
         }
         
-        NSString *marketingCloudId = dictionary[marketingCloudIdKey];
-        if ([marketingCloudId isEqualToString:invalidMarketingCloudId]) {
-            marketingCloudId = nil;
-        }
-        
-        NSString *region = [NSString stringWithFormat:@"%@", dictionary[regionKey]];
-        NSString *blob = dictionary[blobKey];
+        NSString *marketingCloudId = [dictionary[marketingCloudIdKey] isKindOfClass:[NSString class]] ? dictionary[marketingCloudIdKey] : nil;
+        NSString *region = [dictionary[regionKey] isKindOfClass:[NSString class]] ? dictionary[regionKey] : nil;
+        NSString *blob = [dictionary[blobKey] isKindOfClass:[NSString class]] ? dictionary[blobKey] : nil;
         
         weakSelf.region = region;
         weakSelf.blob = blob;
