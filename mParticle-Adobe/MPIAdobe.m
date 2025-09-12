@@ -36,8 +36,6 @@ static NSString *const idSuffix = @"%01";
 
 static NSString *const errorResponseKey = @"error_msg";
 
-static NSString *const invalidMarketingCloudId = @"<null>";
-
 static NSString *const errorDomain = @"mParticle-Adobe";
 static NSString *const serverErrorDomain = @"mParticle-Adobe Server Response";
 
