@@ -177,7 +177,7 @@ static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_M
         weakSelf.region = region;
         weakSelf.blob = blob;
         
-        completion(marketingCloudId, region, blob, nil);
+        completion([marketingCloudId copy], [region copy], [blob copy], nil);
     }] resume];
 }
 
