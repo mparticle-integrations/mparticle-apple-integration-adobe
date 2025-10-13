@@ -41,6 +41,7 @@ static NSString *const serverErrorDomain = @"mParticle-Adobe Server Response";
 
 static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_MID";
 
+
 @interface MPIAdobeError ()
 
 - (id)initWithCode:(MPIAdobeErrorCode)code message:(NSString *)message error:(NSError *)error;
@@ -79,7 +80,23 @@ static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_M
 
 @implementation MPIAdobe
 
-- (void)sendRequestWithMarketingCloudId:(NSString *)marketingCloudId advertiserId:(NSString *)advertiserId pushToken:(NSString *)pushToken organizationId:(NSString *)organizationId userIdentities:(NSDictionary<NSNumber *, NSString *> *)userIdentities audienceManagerServer:(NSString *)audienceManagerServer completion:(void (^)(NSString *marketingCloudId, NSString *locationHint, NSString *blob, NSError *))completion {
+id<SessionProtocol> _session;
+
+- (instancetype)initWithSession:(id<SessionProtocol>) session {
+    self = [super init];
+    if (self != nil) {
+        _session = session;
+    }
+    return self;
+}
+
+- (void)sendRequestWithMarketingCloudId:(NSString *)marketingCloudId
+                           advertiserId:(NSString *)advertiserId
+                              pushToken:(NSString *)pushToken
+                         organizationId:(NSString *)organizationId
+                         userIdentities:(NSDictionary<NSNumber *, NSString *> *)userIdentities
+                  audienceManagerServer:(NSString *)audienceManagerServer
+                             completion:(void (^)(NSString *marketingCloudId, NSString *locationHint, NSString *blob, NSError *))completion {
     
     if (audienceManagerServer != nil && audienceManagerServer.length > 0) {
         host = audienceManagerServer;
@@ -139,14 +156,10 @@ static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_M
     NSURL *url = components.URL;
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
     
     __weak MPIAdobe *weakSelf = self;
     
-    [[session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
-        
+    [[_session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         void (^callbackWithCode)(MPIAdobeErrorCode code, NSString *message, NSError *error) = ^void(MPIAdobeErrorCode code, NSString *message, NSError *error) {
             MPIAdobeError *adobeError = [[MPIAdobeError alloc] initWithCode:code message:message error:error];
             NSError *compositeError = [NSError errorWithDomain:errorDomain code:adobeError.code userInfo:@{MPIAdobeErrorKey:adobeError}];
@@ -166,8 +179,13 @@ static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_M
         
         NSDictionary *errorDictionary = dictionary[errorResponseKey];
         if (errorDictionary) {
-            NSError *error = [NSError errorWithDomain:serverErrorDomain code:0 userInfo:errorDictionary];
-            return callbackWithCode(MPIAdobeErrorCodeServerError, @"Server returned an error", error);
+            if ([errorDictionary isKindOfClass:[NSDictionary class]]) {
+                NSError *error = [NSError errorWithDomain:serverErrorDomain code:0 userInfo:errorDictionary];
+                return callbackWithCode(MPIAdobeErrorCodeServerError, @"Server returned an error", error);
+            } else {
+                NSError *error = [NSError errorWithDomain:serverErrorDomain code:0 userInfo:@{}];
+                return callbackWithCode(MPIAdobeErrorCodeServerError, @"Server returned an error", error);
+            }
         }
         
         NSString *marketingCloudId = [dictionary[marketingCloudIdKey] isKindOfClass:[NSString class]] ? dictionary[marketingCloudIdKey] : nil;

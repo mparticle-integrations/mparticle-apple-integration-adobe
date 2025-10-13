@@ -58,5 +58,10 @@ let package = Package(
             exclude: ["Dummy.swift", "Info.plist"],
             resources: [.process("PrivacyInfo.xcprivacy")],
             publicHeadersPath: "."),
+        .testTarget(
+            name: "mParticle-AdobeTests",
+            dependencies: ["mParticle-Adobe"],
+            path: "mParticle-AdobeTests"
+        ),
     ]
 )
