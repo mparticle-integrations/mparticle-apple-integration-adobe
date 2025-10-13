@@ -81,7 +81,13 @@ static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_M
 
 @implementation MPIAdobe
 
-- (void)sendRequestWithMarketingCloudId:(NSString *)marketingCloudId advertiserId:(NSString *)advertiserId pushToken:(NSString *)pushToken organizationId:(NSString *)organizationId userIdentities:(NSDictionary<NSNumber *, NSString *> *)userIdentities audienceManagerServer:(NSString *)audienceManagerServer completion:(void (^)(NSString *marketingCloudId, NSString *blob, NSString *locationHint, NSError *))completion {
+- (void)sendRequestWithMarketingCloudId:(NSString *)marketingCloudId
+                           advertiserId:(NSString *)advertiserId
+                              pushToken:(NSString *)pushToken
+                         organizationId:(NSString *)organizationId
+                         userIdentities:(NSDictionary<NSNumber *, NSString *> *)userIdentities
+                  audienceManagerServer:(NSString *)audienceManagerServer
+                             completion:(void (^)(NSString *marketingCloudId, NSString *blob, NSString *locationHint, NSError *))completion {
     
     if (audienceManagerServer != nil && audienceManagerServer.length > 0) {
         host = audienceManagerServer;
@@ -147,8 +153,6 @@ static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_M
     __weak MPIAdobe *weakSelf = self;
     
     [[session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
-        
         void (^callbackWithCode)(MPIAdobeErrorCode code, NSString *message, NSError *error) = ^void(MPIAdobeErrorCode code, NSString *message, NSError *error) {
             MPIAdobeError *adobeError = [[MPIAdobeError alloc] initWithCode:code message:message error:error];
             NSError *compositeError = [NSError errorWithDomain:errorDomain code:adobeError.code userInfo:@{MPIAdobeErrorKey:adobeError}];
