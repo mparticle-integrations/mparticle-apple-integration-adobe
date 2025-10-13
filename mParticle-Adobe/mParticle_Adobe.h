@@ -11,5 +11,8 @@ FOUNDATION_EXPORT const unsigned char mParticle_AdobeVersionString[];
 #if defined(__has_include) && __has_include(<mParticle_Adobe/MPKitAdobe.h>)
 #import <mParticle_Adobe/MPKitAdobe.h>
 #else
+
 #import "MPKitAdobe.h"
+#import "MPIAdobe.h"
+
 #endif
