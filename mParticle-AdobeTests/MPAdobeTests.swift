@@ -10,6 +10,9 @@ import XCTest
 
 import Foundation
 
+extension URLSession: @retroactive SessionProtocol {
+}
+
 extension URLSessionConfiguration {
     @objc class func mockDefaultSessionConfiguration() -> URLSessionConfiguration {
         let config = self.mockDefaultSessionConfiguration()
@@ -86,7 +89,11 @@ final class MPAdobeTests: XCTestCase {
         )
         
         let expectation = XCTestExpectation(description: "completion called")
-        let sut = MPIAdobe()
+        
+        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: config)
+
+        let sut = MPIAdobe(session: session)!
         sut.sendRequest(
             withMarketingCloudId: "",
             advertiserId: "",
