@@ -5,6 +5,7 @@
 //  Created by Denis Chilik on 10/9/25.
 //
 @testable import mParticle_Adobe
+import Foundation
 import XCTest
 
 import Foundation
@@ -27,13 +28,18 @@ final class URLProtocolMock: URLProtocol {
     static var testData: Data?
     static var testResponse: HTTPURLResponse?
     static var testError: Error?
+    
+    static var canInitRequestParam: URLRequest?
+    static var canonicalReceivedRequestParam: URLRequest?
 
     override class func canInit(with request: URLRequest) -> Bool {
-        true
+        canInitRequestParam = request
+        return true
     }
 
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {
-        request
+        canonicalReceivedRequestParam = request
+        return request
     }
 
     override func startLoading() {
@@ -80,7 +86,6 @@ final class MPAdobeTests: XCTestCase {
         )
         
         let expectation = XCTestExpectation(description: "completion called")
-        
         let sut = MPIAdobe()
         sut.sendRequest(
             withMarketingCloudId: "",
@@ -98,5 +103,8 @@ final class MPAdobeTests: XCTestCase {
         }
         
         wait(for: [expectation], timeout: 1)
+        let expectedRequest = URLRequest(url: URL(string: "https://dpm.demdex.net/id?d_mid=&d_cid=20915%2501&d_cid=20920%2501&d_orgid=&d_ptfm=ios&d_ver=2")!)
+        XCTAssertEqual(URLProtocolMock.canInitRequestParam, expectedRequest)
+        XCTAssertEqual(URLProtocolMock.canonicalReceivedRequestParam, expectedRequest)
     }
 }
