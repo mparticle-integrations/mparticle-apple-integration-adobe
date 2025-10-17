@@ -174,8 +174,11 @@ static NSString *const marketingCloudIdUserDefaultsKey = @"ADBMOBILE_PERSISTED_M
         NSString *region = [dictionary[regionKey] isKindOfClass:[NSString class]] ? dictionary[regionKey] : nil;
         NSString *blob = [dictionary[blobKey] isKindOfClass:[NSString class]] ? dictionary[blobKey] : nil;
         
-        weakSelf.region = region;
-        weakSelf.blob = blob;
+        MPIAdobe *strongSelf = weakSelf;
+        if (strongSelf) {
+            strongSelf.region = [region copy];
+            strongSelf.blob = [blob copy];
+        }
         
         completion([marketingCloudId copy], [region copy], [blob copy], nil);
     }] resume];
