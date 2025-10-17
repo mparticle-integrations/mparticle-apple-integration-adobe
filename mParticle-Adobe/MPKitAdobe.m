@@ -26,6 +26,9 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
 
 @end
 
+@interface NSURLSession (SessionProtocol) <SessionProtocol>
+@end
+
 @implementation MPKitAdobe
 
 static NSString *_midOverride = nil;
@@ -70,7 +73,9 @@ static __weak MPKitAdobe *_sharedInstance = nil;
     
     _configuration = configuration;
     _started       = YES;
-    _adobe         = [[MPIAdobe alloc] init];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+    _adobe         = [[MPIAdobe alloc] initWithSession: session];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didEnterBackground:)
@@ -155,7 +160,13 @@ static __weak MPKitAdobe *_sharedInstance = nil;
     NSString *pushToken = [self pushToken];
     FilteredMParticleUser *user = [self currentUser];
     NSDictionary *userIdentities = user.userIdentities;
-    [_adobe sendRequestWithMarketingCloudId:marketingCloudId advertiserId:advertiserId pushToken:pushToken organizationId:_organizationId userIdentities:userIdentities audienceManagerServer:_audienceManagerServer completion:^(NSString *marketingCloudId, NSString *locationHint, NSString *blob, NSError *error) {
+    [_adobe sendRequestWithMarketingCloudId:marketingCloudId
+                               advertiserId:advertiserId
+                                  pushToken:pushToken
+                             organizationId:_organizationId
+                             userIdentities:userIdentities
+                      audienceManagerServer:_audienceManagerServer
+                                 completion:^(NSString *marketingCloudId, NSString *locationHint, NSString *blob, NSError *error) {
         if (error) {
             NSLog(@"mParticle -> Adobe kit request failed with error: %@", error);
             return;
