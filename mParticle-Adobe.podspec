@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = "mParticle-Adobe"
-    s.version          = "8.2.3"
+    s.version          = "8.2.4"
     s.summary          = "Adobe integration for mParticle"
 
     s.description      = <<-DESC
