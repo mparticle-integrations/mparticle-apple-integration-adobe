@@ -143,14 +143,14 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
                 self.defaultMediaTracker = [AEPMobileMedia createTrackerWithConfig:config];
                 self.mediaTrackers = [[NSMutableDictionary<NSString *, id<AEPMediaTracker>> alloc] init];
                 NSLog(@"mParticle -> Adobe Media configured");
+                self.syncingId = NO;
+                [self syncId];
             }];
         } else {
             NSLog(@"mParticle -> Adobe Media not configured");
         }
 
         self->_started = YES;
-        
-        [self syncId];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             NSDictionary *userInfo = @{mParticleKitInstanceKey:[[self class] kitCode]};
