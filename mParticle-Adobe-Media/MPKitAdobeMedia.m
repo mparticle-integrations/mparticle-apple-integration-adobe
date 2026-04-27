@@ -399,6 +399,7 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
                 BOOL didUpdateIntegrationAttributes = ![mid isEqualToString:existingMid];
                 if (didUpdateIntegrationAttributes) {
                     [[MParticle sharedInstance] setIntegrationAttributes:@{marketingCloudIdIntegrationAttributeKey: mid} forKit:[[self class] kitCode]];
+                    NSLog(@"mParticle -> Adobe Media - Updated integration attributes with Adobe cloud experience Id (marketing cloud Id)");
                 }
                 NSLog(@"mParticle -> Adobe Media - Successfully retrieved Adobe cloud experience Id (marketing cloud Id)%@", didUpdateIntegrationAttributes ? @"; updated integration attributes" : @"; integration attributes already up to date");
             } else {
