@@ -133,22 +133,22 @@ static NSString *const audienceManagerServerConfigurationKey = @"audienceManager
     static dispatch_once_t kitPredicate;
 
     NSString *launchAppId  = _configuration[launchAppIdKey];
+    if (launchAppId == nil) {
+        NSLog(@"mParticle -> Adobe Media config wasn't received yet.");
+        return;
+    }
     
     dispatch_once(&kitPredicate, ^{
         [AEPMobileCore setLogLevel:AEPLogLevelDebug];
-        if (launchAppId != nil) {
-            [AEPMobileCore registerExtensions:@[AEPMobileAnalytics.class, AEPMobileMedia.class, AEPMobileUserProfile.class, AEPMobileSignal.class, AEPMobileLifecycle.class, AEPMobileIdentity.class] completion:^{
-                [AEPMobileCore configureWithAppId:launchAppId];
-                NSMutableDictionary* config = [NSMutableDictionary dictionary];
-                self.defaultMediaTracker = [AEPMobileMedia createTrackerWithConfig:config];
-                self.mediaTrackers = [[NSMutableDictionary<NSString *, id<AEPMediaTracker>> alloc] init];
-                NSLog(@"mParticle -> Adobe Media configured");
-                self.syncingId = NO;
-                [self syncId];
-            }];
-        } else {
-            NSLog(@"mParticle -> Adobe Media not configured");
-        }
+        [AEPMobileCore registerExtensions:@[AEPMobileAnalytics.class, AEPMobileMedia.class, AEPMobileUserProfile.class, AEPMobileSignal.class, AEPMobileLifecycle.class, AEPMobileIdentity.class] completion:^{
+            [AEPMobileCore configureWithAppId:launchAppId];
+            NSMutableDictionary* config = [NSMutableDictionary dictionary];
+            self.defaultMediaTracker = [AEPMobileMedia createTrackerWithConfig:config];
+            self.mediaTrackers = [[NSMutableDictionary<NSString *, id<AEPMediaTracker>> alloc] init];
+            NSLog(@"mParticle -> Adobe Media configured");
+            self.syncingId = NO;
+            [self syncId];
+        }];
 
         self->_started = YES;
 
